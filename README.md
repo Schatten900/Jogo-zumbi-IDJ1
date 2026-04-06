@@ -4,7 +4,7 @@
 Projeto de criação de jogo 2d utilizando a biblioteca SDL2 em C++
 
 # Entregas modularizadas em partes:
-Trabalho 1 (Pendente)
+Trabalho 1 (Concuido)
 Trabalho 2 (Pendente)
 Trabalho 3 (Pendente)
 Trabalho 4 (Pendente)
