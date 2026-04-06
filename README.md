@@ -13,8 +13,8 @@ Trabalho 6 (Pendente)
 Trabalho 7 (Pendente)
 
 ## Como rodar o projeto:
-mkdir -p build
-g++ src/*.cpp -o build/game $(sdl2-config --cflags --libs)
+mkdir -p build 
+g++ src/*.cpp src/*/*.cpp -Iinclude -o build/game $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_mixer
 ./build/game
 
 ## Autor:
