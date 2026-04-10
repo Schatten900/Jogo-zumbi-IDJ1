@@ -6,7 +6,17 @@ class Vec2{
         float y;
     
     public:
-    Vec2(float x = 0, float y = 0);
+        Vec2(float x = 0, float y = 0);
+
+        // =====================================================
+        // Getters and Setters
+        // =====================================================
+
+        float getX() const ;
+        float getY() const ;
+        void setX(float x);
+        void setY(float y);
+
 
         // =====================================================
         // Basic vector arithmetic
@@ -15,6 +25,7 @@ class Vec2{
         Vec2 operator-(const Vec2& other) const;
         Vec2 operator*(float scalar) const;
         Vec2 operator/(float scalar) const;
+        Vec2& operator+=(const Vec2& other);
         
 
         // =====================================================

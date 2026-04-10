@@ -1,4 +1,4 @@
-#include "math/vetor.h"
+#include "vec2/vec2.h"
 #include <cmath>
 
 Vec2::Vec2(float x, float y){
@@ -6,12 +6,34 @@ Vec2::Vec2(float x, float y){
     this->y = y;
 }
 
+static Vec2 zero(){
+    return Vec2(0,0);
+}
+
+// =====================================================
+// Getters and Setters
+// =====================================================
+
+float Vec2::getX() const { return x;}
+
+float Vec2::getY() const { return y;}
+
+void Vec2::setX(float x){this->x = x;}
+
+void Vec2::setY(float y){ this->y = y;}
+
 // =====================================================
 // Basic vector arithmetic
 // =====================================================
 
 Vec2 Vec2::operator+(const Vec2& other) const {
     return Vec2(x + other.x, y + other.y);
+}
+
+Vec2& Vec2::operator+=(const Vec2& other){
+    x += other.x;
+    y += other.y;
+    return *this;
 }
 
 Vec2 Vec2::operator-(const Vec2& other) const {

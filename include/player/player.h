@@ -1,5 +1,5 @@
 #pragma once
-#include "math/vetor.h"
+#include "vec2/vec2.h"
 
 class Player{
     public:

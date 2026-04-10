@@ -61,10 +61,16 @@ State& Game::GetState(){
 
 void Game::Run(){
     State& state = GetState();
+    int frameStart;
+    float dt = 0;
     while (!state.QuitRequested()){
-        state.Update(0);
+        frameStart = SDL_GetTicks();
+        SDL_RenderClear(renderer);
+
+        state.Update(dt);
         state.Render();
-        SDL_RenderPresent(GetRenderer());
+        SDL_RenderPresent(renderer);
+        dt = (SDL_GetTicks() - frameStart) / 1000.0f;
         SDL_Delay(33);
     }
 }
