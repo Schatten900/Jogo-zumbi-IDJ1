@@ -1,6 +1,8 @@
 #include "state/state.h"
 #include "zombie/zombie.h"
 #include "spriteRenderer/spriteRenderer.h"
+#include "tileset/tileset.h"
+#include "tilemap/tilemap.h"
 
 State::State(){
     quitRequested = false;
@@ -17,6 +19,19 @@ bool State::QuitRequested(){
 }
 
 void State::LoadAssets(){
+
+    // TileSet
+    TileSet* ts = new TileSet(64,64,"assets/img/Tileset.png");
+
+    // TileMap
+    GameObject* tmGO = new GameObject();
+    tmGO->box = Rect(0,0,0,0);
+    tmGO->AddComponent(
+        new TileMap(*tmGO,"assets/map/map.txt",ts)
+    );
+
+    AddObject(tmGO);
+
     // Background
     GameObject* bgGO = new GameObject();
     bgGO->box = Rect(0, 0, 0, 0);
@@ -28,12 +43,12 @@ void State::LoadAssets(){
     AddObject(bgGO);
 
     // Zombie
-    GameObject* zombieGO = new GameObject();
-    zombieGO->box = Rect(600, 450, 0, 0);
-
-    zombieGO->AddComponent(new Zombie(*zombieGO));
-
-    AddObject(zombieGO);
+    for(int i = 0; i < 5; i++){
+        GameObject* zombieGO = new GameObject();
+        zombieGO->box = Rect(300 + i * 100, 450, 0, 0);
+        zombieGO->AddComponent(new Zombie(*zombieGO));
+        AddObject(zombieGO);
+    }
 
     // Music
     music.Open("assets/audio/BGM.wav");

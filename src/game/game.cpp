@@ -1,4 +1,5 @@
 #include "game/game.h"
+#include "resources/resources.h"
 
 Game* Game::instance = nullptr;
 
@@ -73,6 +74,9 @@ void Game::Run(){
         dt = (SDL_GetTicks() - frameStart) / 1000.0f;
         SDL_Delay(33);
     }
+    Resources::ClearImages();
+    Resources::ClearSounds();
+    Resources::ClearMusics();
 }
 
 

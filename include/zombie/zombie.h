@@ -1,6 +1,7 @@
 #pragma once
 #include "component/component.h"
 #include "gameObject/gameObject.h"
+#include "sound/sound.h"
 
 class Zombie : public Component{
     public:
@@ -10,4 +11,5 @@ class Zombie : public Component{
         void Render();
     private:
         int hitPoints;
+        Sound deathSound;
 };
