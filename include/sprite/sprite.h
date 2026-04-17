@@ -26,6 +26,8 @@ class Sprite{
         int GetWidth();
         bool isOpen();
 
+        bool cameraFollower;
+
     private:
         SDL_Texture* texture;
         int width;

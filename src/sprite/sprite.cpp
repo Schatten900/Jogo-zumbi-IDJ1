@@ -1,6 +1,7 @@
 #include "sprite/sprite.h"
 #include "game/game.h"
 #include "resources/resources.h"
+#include "camera/camera.h"
 
 
 // =====================================================
@@ -11,11 +12,15 @@ Sprite::Sprite(){
     texture = nullptr;
     width = 0;
     height = 0;
+    frameCountW = 1;
+    frameCountH = 1;
+    cameraFollower = false;
 }
 Sprite::Sprite(std::string file){
     texture = nullptr;
     width = 0;
     height = 0;
+    cameraFollower = false;
     Open(file);
 }
 
@@ -25,6 +30,7 @@ Sprite::Sprite(std::string file,int frameCountW, int frameCountH){
     height = 0;
     this->frameCountH = frameCountH;
     this->frameCountW = frameCountW;
+    cameraFollower = false;
     Open(file);
 }
 
@@ -44,11 +50,21 @@ void Sprite::Open(std::string file){
 // =====================================================
 
 void Sprite::Render(int x, int y){
+
     SDL_Rect dstRect;
-    dstRect.x = x;
-    dstRect.y = y;
+
+    if(cameraFollower){
+        dstRect.x = x;
+        dstRect.y = y;
+    }
+    else{
+        dstRect.x = x - Camera::pos.getX();
+        dstRect.y = y - Camera::pos.getY();
+    }
+
     dstRect.w = clipRect.w;
     dstRect.h = clipRect.h;
+
 
     SDL_RenderCopy(
         Game::GetInstance().GetRenderer(),

@@ -1,6 +1,7 @@
 #include "game/game.h"
 #include "resources/resources.h"
 #include "inputManager/inputManager.h"
+#include "camera/camera.h"
 
 Game* Game::instance = nullptr;
 
@@ -71,6 +72,7 @@ void Game::Run(){
         SDL_RenderClear(renderer);
 
         InputManager::GetInstance().Update();
+        Camera::Update(dt); 
         state.Update(dt);
         state.Render();
         SDL_RenderPresent(renderer);

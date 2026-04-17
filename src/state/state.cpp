@@ -4,6 +4,7 @@
 #include "tileset/tileset.h"
 #include "tilemap/tilemap.h"
 #include "inputManager/inputManager.h"
+#include "camera/camera.h"
 
 State::State(){
     quitRequested = false;
@@ -37,10 +38,10 @@ void State::LoadAssets(){
     GameObject* bgGO = new GameObject();
     bgGO->box = Rect(0, 0, 0, 0);
 
-    bgGO->AddComponent(
-        new SpriteRenderer(*bgGO, "assets/img/Background.png")
-    );
+    SpriteRenderer* bg = new SpriteRenderer(*bgGO, "assets/img/Background.png");
+    bg->SetCameraFollower(true);
 
+    bgGO->AddComponent(bg);
     AddObject(bgGO);
 
     // Zombie
@@ -56,23 +57,36 @@ void State::LoadAssets(){
 }
 
 void State::Update(float dt){
-    //if (SDL_QuitRequested()) quitRequested = true;
 
+    //===============================
+    //  Camera
+    //===============================
 
+    Camera::Update(dt);
+
+    //===============================
+    //  Inputs
+    //===============================
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || InputManager::GetInstance().QuitRequested()) quitRequested = true;   
     if (InputManager::GetInstance().KeyPress(SPACE_KEY)){
-        int mouseX = InputManager::GetInstance().GetMouseX();
-        int mousey = InputManager::GetInstance().GetMouseY();
+        int mouseX = InputManager::GetInstance().GetMouseX() + Camera::pos.getX();
+        int mousey = InputManager::GetInstance().GetMouseY() + Camera::pos.getY();
         GameObject* zombieGO = new GameObject();
         zombieGO->box = Rect(mouseX,mousey,64,64);
         zombieGO->AddComponent(new Zombie(*zombieGO));
         AddObject(zombieGO);
     }
 
+    //===============================
+    //  Renderização dos objetos
+    //===============================
     for(int i = 0; i < objectArray.size(); i++){
         objectArray[i]->Update(dt);
     }
 
+    //===============================
+    //  Remoção dos objetos
+    //===============================
     for(size_t i = 0; i < objectArray.size(); ){
         if(objectArray[i]->IsDead()){
             objectArray.erase(objectArray.begin() + i);

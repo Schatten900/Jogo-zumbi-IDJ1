@@ -13,6 +13,9 @@ class SpriteRenderer : public Component{
         void Render() override;
         void SetFrame(int frame);
 
+        void SetCameraFollower(bool val);
+
+
     private:    
         Sprite sprite;
 };
