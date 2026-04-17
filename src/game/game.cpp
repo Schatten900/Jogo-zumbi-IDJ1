@@ -1,5 +1,6 @@
 #include "game/game.h"
 #include "resources/resources.h"
+#include "inputManager/inputManager.h"
 
 Game* Game::instance = nullptr;
 
@@ -61,6 +62,7 @@ State& Game::GetState(){
 }
 
 void Game::Run(){
+    
     State& state = GetState();
     int frameStart;
     float dt = 0;
@@ -68,6 +70,7 @@ void Game::Run(){
         frameStart = SDL_GetTicks();
         SDL_RenderClear(renderer);
 
+        InputManager::GetInstance().Update();
         state.Update(dt);
         state.Render();
         SDL_RenderPresent(renderer);

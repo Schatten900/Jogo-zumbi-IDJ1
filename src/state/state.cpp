@@ -3,6 +3,7 @@
 #include "spriteRenderer/spriteRenderer.h"
 #include "tileset/tileset.h"
 #include "tilemap/tilemap.h"
+#include "inputManager/inputManager.h"
 
 State::State(){
     quitRequested = false;
@@ -43,12 +44,12 @@ void State::LoadAssets(){
     AddObject(bgGO);
 
     // Zombie
-    for(int i = 0; i < 5; i++){
-        GameObject* zombieGO = new GameObject();
-        zombieGO->box = Rect(300 + i * 100, 450, 0, 0);
-        zombieGO->AddComponent(new Zombie(*zombieGO));
-        AddObject(zombieGO);
-    }
+    //for(int i = 0; i < 5; i++){
+    //    GameObject* zombieGO = new GameObject();
+    //    zombieGO->box = Rect(300 + i * 100, 450, 0, 0);
+    //    zombieGO->AddComponent(new Zombie(*zombieGO));
+    //    AddObject(zombieGO);
+    //}
 
     // Music
     music.Open("assets/audio/BGM.wav");
@@ -56,6 +57,18 @@ void State::LoadAssets(){
 
 void State::Update(float dt){
     //if (SDL_QuitRequested()) quitRequested = true;
+
+
+    if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || InputManager::GetInstance().QuitRequested()) quitRequested = true;   
+    if (InputManager::GetInstance().KeyPress(SPACE_KEY)){
+        int mouseX = InputManager::GetInstance().GetMouseX();
+        int mousey = InputManager::GetInstance().GetMouseY();
+        GameObject* zombieGO = new GameObject();
+        zombieGO->box = Rect(mouseX,mousey,64,64);
+        zombieGO->AddComponent(new Zombie(*zombieGO));
+        AddObject(zombieGO);
+    }
+
     for(int i = 0; i < objectArray.size(); i++){
         objectArray[i]->Update(dt);
     }

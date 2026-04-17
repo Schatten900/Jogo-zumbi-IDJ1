@@ -15,7 +15,7 @@ class Rect{
         Vec2 getCenter();
         float getCenterDistance(Rect other);
 
-        bool contains(Vec2& point);
+        bool contains(Vec2& point) const;
 
         bool intersects(const Rect& other) const;
 

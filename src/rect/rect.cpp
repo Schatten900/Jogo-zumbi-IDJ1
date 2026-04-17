@@ -42,7 +42,7 @@ float Rect::getCenterDistance(Rect other){
 // HitBox
 // =====================================================
 
-bool Rect::contains(Vec2& point){
+bool Rect::contains(Vec2& point) const{
     return point.getX() >= x &&
            point.getX() <= x + w &&
            point.getY() >= y &&
