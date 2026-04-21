@@ -14,12 +14,16 @@ Sprite::Sprite(){
     height = 0;
     frameCountW = 1;
     frameCountH = 1;
+    scale = Vec2(1,1);
+    flip = SDL_FLIP_NONE;
     cameraFollower = false;
 }
 Sprite::Sprite(std::string file){
     texture = nullptr;
     width = 0;
     height = 0;
+    scale = Vec2(1,1);
+    flip = SDL_FLIP_NONE;
     cameraFollower = false;
     Open(file);
 }
@@ -28,6 +32,8 @@ Sprite::Sprite(std::string file,int frameCountW, int frameCountH){
     texture = nullptr;
     width = 0;
     height = 0;
+    scale = Vec2(1,1);
+    flip = SDL_FLIP_NONE;
     this->frameCountH = frameCountH;
     this->frameCountW = frameCountW;
     cameraFollower = false;
@@ -49,7 +55,7 @@ void Sprite::Open(std::string file){
 // Render
 // =====================================================
 
-void Sprite::Render(int x, int y){
+void Sprite::Render(int x, int y, float angle){
 
     SDL_Rect dstRect;
 
@@ -62,33 +68,38 @@ void Sprite::Render(int x, int y){
         dstRect.y = y - Camera::pos.getY();
     }
 
-    dstRect.w = clipRect.w;
-    dstRect.h = clipRect.h;
+    dstRect.w = clipRect.w * scale.getX();
+    dstRect.h = clipRect.h * scale.getY();
 
 
-    SDL_RenderCopy(
+    SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(),
         texture,
         &clipRect,
-        &dstRect
+        &dstRect,
+        angle,
+        nullptr,
+        flip
     );
 }
 
-void Sprite::Render(int x, int y, int w, int h){
+void Sprite::Render(int x, int y, int w, int h, float angle){
     SDL_Rect dstRect;
     dstRect.x = x;
     dstRect.y = y;
-    dstRect.w = w;
-    dstRect.h = h;
+    dstRect.w = w * scale.getX();
+    dstRect.h = h * scale.getY();
 
-    SDL_RenderCopy(
+    SDL_RenderCopyEx(
         Game::GetInstance().GetRenderer(),
         texture,
         &clipRect,
-        &dstRect
+        &dstRect,
+        angle,
+        nullptr,
+        flip
     );
 }
-
 
 
 // =====================================================
@@ -96,10 +107,14 @@ void Sprite::Render(int x, int y, int w, int h){
 // =====================================================
 
 int Sprite::GetHeight(){
-    return height / frameCountH;
+    return (height / frameCountH) * scale.getY();
 }
 int Sprite::GetWidth(){
-    return width / frameCountW;
+    return (width / frameCountW) * scale.getX();
+}
+
+Vec2 Sprite::GetScale(){
+    return scale;
 }
 
 void Sprite::SetClip(int x, int y, int w, int h){
@@ -125,6 +140,15 @@ void Sprite::SetFrame(int frame){
 void Sprite::SetFrameCount(int frameCountW, int frameCountH){
     this->frameCountH = frameCountH;
     this->frameCountW = frameCountW;
+}
+
+void Sprite::SetScale(float scaleX, float scaleY){
+    if (scaleX != 0) scale.setX(scaleX);
+    if (scaleY != 0) scale.setY(scaleY);
+}
+
+void Sprite::SetFlip(SDL_RendererFlip flip){
+    this->flip = flip;
 }
 
 bool Sprite::isOpen(){

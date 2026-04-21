@@ -15,9 +15,10 @@ class Animator : public Component{
         void AddAnimation(std::string name, Animation anim);
     private:
         std::unordered_map<std::string,Animation> animations;
+        std::string current;
         int frameStart;
         int frameEnd;
-        int frameTime;
+        float frameTime;
         int currentFrame;
         float timeElapsed;
 };

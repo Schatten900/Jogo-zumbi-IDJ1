@@ -20,6 +20,23 @@ float Rect::getY() const { return y;}
 float Rect::getW() const {return w;}
 float Rect::getH() const {return h;}
 
+
+void Rect::setX(float x){
+    this->x = x;
+} 
+
+void Rect::setY(float y){
+    this->y = y;
+}
+
+void Rect::setW(float w){
+    this->w = w;
+}
+
+void Rect::setH(float h){
+    this->h = h;
+}
+
 // =====================================================
 // Center
 // =====================================================
@@ -56,6 +73,10 @@ bool Rect::intersects(const Rect& other) const{
            y + h > other.y;
 }
 
-Rect Rect::operator+(Vec2& vec) const{
+//Rect Rect::operator+(Vec2& vec) const{
+//    return Rect(x + vec.getX(), y + vec.getY(), w, h);
+//}
+
+Rect Rect::operator+(Vec2 vec) const{
     return Rect(x + vec.getX(), y + vec.getY(), w, h);
 }

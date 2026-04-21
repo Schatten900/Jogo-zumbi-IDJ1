@@ -1,10 +1,19 @@
 #include "animation/animation.h"
        
-Animation::Animation(int frameStart, int frameEnd, float frameTime){
-    this->frameStart = frameStart;
-    this->frameEnd = frameEnd;
-    this-> frameTime = frameTime;
-}
+
+//==============
+// Constructor
+//==============
+
+Animation::Animation() : frameStart(0), frameEnd(0), frameTime(0), flip(SDL_FLIP_NONE) {}
+
+Animation::Animation(int start, int end, float time, SDL_RendererFlip flip)
+    : frameStart(start), frameEnd(end), frameTime(time), flip(flip){}
+
+
+//==============
+// Getters
+//==============
 int Animation::getFrameStart(){
     return this->frameStart;
 }
@@ -17,6 +26,10 @@ float Animation::getFrameTime(){
     return this->frameTime;
 }
 
+
+//==============
+// Setters
+//==============
 void Animation::setFrameStart(int frameStart){
     this->frameStart = frameStart;
 }

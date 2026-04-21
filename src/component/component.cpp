@@ -6,3 +6,4 @@ Component::Component(GameObject& associated)
 
 Component::~Component() {}
 
+void Component::Start() {}

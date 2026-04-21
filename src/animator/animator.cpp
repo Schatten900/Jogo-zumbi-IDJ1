@@ -13,9 +13,9 @@ Animator::Animator(GameObject& associated)
 
 void Animator::Update(float dt){
     if (frameTime == 0) return;
-    timeElapsed +=1;
+    timeElapsed +=dt;
 
-    if (timeElapsed > frameTime) {
+    while (timeElapsed >= frameTime) {
         currentFrame ++;
         timeElapsed -= frameTime;
     }
@@ -36,15 +36,18 @@ void Animator::Render(){
 void Animator::SetAnimation(std::string name){
     auto it = animations.find(name);
     if (it == animations.end()) return;
+    if (it->first != current) {
+        
+        current = it->first;
+        frameEnd = it->second.getFrameEnd();
+        frameStart = it->second.getFrameStart();
+        frameTime = it->second.getFrameTime();
+        currentFrame = frameStart;
+        timeElapsed = 0;
 
-    frameEnd = it->second.getFrameEnd();
-    frameStart = it->second.getFrameStart();
-    frameTime = it->second.getFrameTime();
-    currentFrame = frameStart;
-    timeElapsed = 0;
-    SpriteRenderer* sr = associated.GetComponent<SpriteRenderer>();
-
-    if (sr != nullptr) sr->SetFrame(currentFrame);
+        SpriteRenderer* sr = associated.GetComponent<SpriteRenderer>();
+        if (sr != nullptr) sr->SetFrame(currentFrame, animations[current].flip);
+    }
     
 }
 

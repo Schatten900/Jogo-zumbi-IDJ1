@@ -8,9 +8,9 @@ Acompanhamento do progresso das entregas modularizadas:
 
 - [x] **Trabalho 1**: Concluído
 - [x] **Trabalho 2**: Concluído
-- [ ] **Trabalho 3**: Concluido
-- [ ] **Trabalho 4**: Pendente
-- [ ] **Trabalho 5**: Pendente
+- [x] **Trabalho 3**: Concluido
+- [x] **Trabalho 4**: Concluido
+- [x] **Trabalho 5**: Concluido
 - [ ] **Trabalho 6**: Pendente
 - [ ] **Trabalho 7**: Pendente
 

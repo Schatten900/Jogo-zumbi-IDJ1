@@ -67,17 +67,23 @@ void Game::Run(){
     State& state = GetState();
     int frameStart;
     float dt = 0;
+    state.Start();
     while (!state.QuitRequested()){
-        frameStart = SDL_GetTicks();
+        frameStart = SDL_GetTicks(); 
+
         SDL_RenderClear(renderer);
 
         InputManager::GetInstance().Update();
-        Camera::Update(dt); 
         state.Update(dt);
         state.Render();
         SDL_RenderPresent(renderer);
+
+        int frameTime = SDL_GetTicks() - frameStart;
+
+        if (frameTime < 33)
+            SDL_Delay(33 - frameTime);
+
         dt = (SDL_GetTicks() - frameStart) / 1000.0f;
-        SDL_Delay(33);
     }
     Resources::ClearImages();
     Resources::ClearSounds();

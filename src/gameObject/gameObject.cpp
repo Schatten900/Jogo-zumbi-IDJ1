@@ -2,6 +2,8 @@
 
 GameObject::GameObject(){
     this->isDead = false;
+    this->started = false;
+    this->angleDeg = 0.0f;
 }
 
 GameObject::~GameObject(){
@@ -33,6 +35,8 @@ void GameObject::RequestDelete(){
 
 void GameObject::AddComponent(Component* cpt){
     components.push_back(cpt);
+    if(started) cpt->Start();
+
 }
 
 void GameObject::RemoveComponent(Component* cpt){
@@ -43,3 +47,10 @@ void GameObject::RemoveComponent(Component* cpt){
     }
 }
 
+void GameObject::Start(){
+
+    for (auto& cp : components){
+        cp->Start();
+    }
+    started = true;
+}

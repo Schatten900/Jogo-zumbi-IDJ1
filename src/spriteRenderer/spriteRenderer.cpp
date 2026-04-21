@@ -37,7 +37,8 @@ void SpriteRenderer::Render(){
         associated.box.getX(),
         associated.box.getY(),
         associated.box.getW(),
-        associated.box.getH()
+        associated.box.getH(),
+        associated.angleDeg
     );
 }
 void SpriteRenderer::SetFrame(int frame){
@@ -46,4 +47,28 @@ void SpriteRenderer::SetFrame(int frame){
 
 void SpriteRenderer::SetCameraFollower(bool val){
     sprite.cameraFollower = val;
+}
+
+Sprite& SpriteRenderer::GetSprite(){
+    return sprite;
+}
+
+void SpriteRenderer::SetScale(float scaleX, float scaleY){
+    Vec2 center = associated.box.getCenter();
+    sprite.SetScale(scaleX,scaleY);
+
+    associated.box.setH(sprite.GetHeight());
+    associated.box.setW(sprite.GetWidth());
+
+    associated.box.setX(center.getX() - (associated.box.getW()/2));
+    associated.box.setY(center.getY() - (associated.box.getH()/2));
+}
+
+void SpriteRenderer::SetFrame(int frame, SDL_RendererFlip flip){
+    sprite.SetFrame(frame);
+    sprite.SetFlip(flip);
+}
+
+void SpriteRenderer::SetFlip(SDL_RendererFlip flip){
+    sprite.SetFlip(flip);
 }

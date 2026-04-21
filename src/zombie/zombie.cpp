@@ -25,11 +25,12 @@ Zombie::Zombie(GameObject& associated)
 void Zombie::Damage(int damage){
     if(hitPoints <= 0) return;
 
-    int mouseX = InputManager::GetInstance().GetMouseX() + Camera::pos.getX();
-    int mouseY = InputManager::GetInstance().GetMouseY() + Camera::pos.getY();
-    Vec2 mouseVec(mouseX, mouseY);
+    // Substituir pela bala
+    //int mouseX = InputManager::GetInstance().GetMouseX() + Camera::pos.getX();
+    //int mouseY = InputManager::GetInstance().GetMouseY() + Camera::pos.getY();
+    //Vec2 mouseVec(mouseX, mouseY);
     
-    if (!associated.box.contains(mouseVec)) return;
+    //if (!associated.box.contains(mouseVec)) return;
 
     hitPoints -= damage;
     hitSound.Play(1);
@@ -41,10 +42,8 @@ void Zombie::Damage(int damage){
         if(anim) anim->SetAnimation("hit");
     }
 
-    if(hitPoints <= 0){
-        Animator* anim = associated.GetComponent<Animator>();
+    else{
         if(anim) anim->SetAnimation("dead");
-
         deathSound.Play(1);
         deathTimer.Restart();
     }
@@ -53,7 +52,7 @@ void Zombie::Damage(int damage){
 void Zombie::Update(float dt){
     hitTimer.Update(dt);
     deathTimer.Update(dt);
-    if (InputManager::GetInstance().MousePress(LEFT_MOUSE_BUTTON)) Damage(10);
+
 
     Animator* anim = associated.GetComponent<Animator>();
     if (hit && hitPoints > 0 && hitTimer.Get() > 0.5f){
@@ -65,6 +64,4 @@ void Zombie::Update(float dt){
 
 }
 
-void Zombie::Render(){
-
-}
+void Zombie::Render(){}

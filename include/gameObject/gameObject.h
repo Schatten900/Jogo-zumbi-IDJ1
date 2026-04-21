@@ -9,11 +9,15 @@ class Component;
 class GameObject{
     public:
 
-        Rect box;
-
+        //==============
+        // Constructor
+        //==============
         GameObject();
         ~GameObject();
 
+        //==============
+        // Methods
+        //==============
         void Update(float dt);
         void Render();
 
@@ -23,18 +27,32 @@ class GameObject{
         void AddComponent(Component* cpt);
         void RemoveComponent(Component* cpt);
 
+        void Start();
+
+        //==============
+        // Attributes
+        //==============
+        double angleDeg;
+        Rect box;
+
+        //==============
+        // Getters
+        //==============
         template <class T>
         T* GetComponent() {
-        for(size_t i = 0; i < components.size(); i++){
-            T* component = dynamic_cast<T*>(components[i]);
-            if(component != nullptr){
-                return component;
+            for(size_t i = 0; i < components.size(); i++){
+                T* component = dynamic_cast<T*>(components[i]);
+                if(component != nullptr) return component;
             }
+            return nullptr;
         }
-    return nullptr;
-}
 
     private:
+        //==============
+        // Attributes
+        //==============
         std::vector<Component*> components;
         bool isDead;
+
+        bool started;
 };

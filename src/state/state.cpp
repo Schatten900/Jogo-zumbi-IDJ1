@@ -5,11 +5,13 @@
 #include "tilemap/tilemap.h"
 #include "inputManager/inputManager.h"
 #include "camera/camera.h"
+#include "character/character.h"
+#include "playerController/playerController.h"
+#include <algorithm>
 
 State::State(){
     quitRequested = false;
-    LoadAssets();
-    music.Play(-1);
+    started = false;
 }
 
 State::~State(){
@@ -44,33 +46,28 @@ void State::LoadAssets(){
     bgGO->AddComponent(bg);
     AddObject(bgGO);
 
-    // Zombie
-    //for(int i = 0; i < 5; i++){
-    //    GameObject* zombieGO = new GameObject();
-    //    zombieGO->box = Rect(300 + i * 100, 450, 0, 0);
-    //    zombieGO->AddComponent(new Zombie(*zombieGO));
-    //    AddObject(zombieGO);
-    //}
-
     // Music
     music.Open("assets/audio/BGM.wav");
+
+    // Player
+    GameObject* charGO = new GameObject();
+    charGO->box = Rect(600,600,64,64);
+    charGO->AddComponent(new Character(*charGO,"assets/img/Player.png"));
+    charGO->AddComponent(new PlayerController(*charGO));
+    AddObject(charGO);
+
+    Camera::Follow(charGO);
 }
 
 void State::Update(float dt){
-
-    //===============================
-    //  Camera
-    //===============================
-
-    Camera::Update(dt);
 
     //===============================
     //  Inputs
     //===============================
     if (InputManager::GetInstance().KeyPress(ESCAPE_KEY) || InputManager::GetInstance().QuitRequested()) quitRequested = true;   
     if (InputManager::GetInstance().KeyPress(SPACE_KEY)){
-        int mouseX = InputManager::GetInstance().GetMouseX() + Camera::pos.getX();
-        int mousey = InputManager::GetInstance().GetMouseY() + Camera::pos.getY();
+        int mouseX = InputManager::GetInstance().GetMouseX();
+        int mousey = InputManager::GetInstance().GetMouseY();
         GameObject* zombieGO = new GameObject();
         zombieGO->box = Rect(mouseX,mousey,64,64);
         zombieGO->AddComponent(new Zombie(*zombieGO));
@@ -94,15 +91,36 @@ void State::Update(float dt){
             i++;
         }
     }
+    Camera::Update(dt);
 
 }
 void State::Render(){
-    //bg.Render(0, 0);
-        for(int i = 0; i < objectArray.size(); i++){
-        objectArray[i]->Render();
-    }
+
+    for (auto go : objectArray) go->Render();
 }
 
-void State::AddObject(GameObject* go){
-    objectArray.emplace_back(go);
+std::weak_ptr<GameObject> State::AddObject(GameObject* go){
+    std::shared_ptr<GameObject> ptr(go);
+    objectArray.push_back(ptr);
+    if (started) ptr->Start();
+
+    return std::weak_ptr<GameObject>(ptr);
 }
+
+std::weak_ptr< GameObject > State::GetObjectPtr(GameObject* go){
+    for (auto& go_aux : objectArray){
+        if (go_aux.get() == go ) return std::weak_ptr<GameObject>(go_aux);
+    }
+    return std::weak_ptr<GameObject>();
+}
+
+void State::Start(){
+    LoadAssets();
+    music.Play(-1);
+    for (auto& go : objectArray){
+        go->Start();
+    }
+    started = true;
+}
+ 
+
