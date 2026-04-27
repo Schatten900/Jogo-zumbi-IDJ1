@@ -5,6 +5,8 @@
 #include <memory>
 #include <string>
 #include <queue>
+#include "sound/sound.h"
+#include "timer/timer.h"
 
 class Character : public Component {
 
@@ -43,18 +45,38 @@ class Character : public Component {
         void Render();
         void Issue(Command task);
 
+        void NotifyCollision(GameObject& other);
+
+        void Damage(int);
+
         // Jogador
-        static Character* player;
+        static std::weak_ptr<GameObject> player;
 
     private:
         std::weak_ptr<GameObject> gun;
 
         std::queue<Command> taskQueue;
 
+        //============
+        // Attributes
+        //============
+
         Vec2 speed;
         float linearSpeed;
         int hp;
 
+        //==========
+        // Sound
+        //==========
+
+        Sound hitSound;
+        Sound deathSound;
+
+        //==========
+        // Timer
+        //==========
         Timer deathTimer;
+        Timer hitTimer;
+        Timer damageTimer;
 
 };

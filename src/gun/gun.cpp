@@ -5,6 +5,7 @@
 #include "game/game.h"
 #include "inputManager/inputManager.h"
 #include "camera/camera.h"
+#include "character/character.h"
 #include <cmath>
 
 Gun::Gun(GameObject& associated, std::weak_ptr<GameObject> character) : 
@@ -20,6 +21,8 @@ reloadSound("assets/audio/PumpAction.mp3"){
 
     SpriteRenderer* sr = new SpriteRenderer(associated,"assets/img/Gun.png",3,2);
     associated.AddComponent(sr);
+
+    target = Vec2(0,0);
 
     //===================
     // Animation
@@ -45,13 +48,6 @@ void Gun::Update(float dt){
     //===========
     //  Angle
     //===========
-    InputManager& im = InputManager::GetInstance();
-
-    int mouseX = im.GetMouseX();
-    int mouseY = im.GetMouseY();
-
-    Vec2 target(mouseX, mouseY);
-
     Vec2 direction = target - charPtr->box.getCenter();
     direction = direction.normalize();
 
@@ -114,6 +110,10 @@ void Gun::Update(float dt){
 
 void Gun::Render(){}
 
+void Gun::SetTarget(Vec2 newTarget){
+    target = newTarget;
+}
+
 void Gun::Shoot(Vec2 target){
 
     // Só atira se estiver pronto
@@ -125,23 +125,34 @@ void Gun::Shoot(Vec2 target){
     //===========
     //  Bullet
     //===========
-    GameObject* bulletGO = new GameObject();
+    SetTarget(target);
+    float spread = 15 * M_PI / 180.0f;
 
-    float dist = 32;
-    Vec2 offset = Vec2(cos(angle), sin(angle)) * dist;
+    for(int i =0; i<=2; i++){
 
-    bulletGO->box = Rect(
-        associated.box.getCenter().getX() + offset.getX(),
-        associated.box.getCenter().getY() + offset.getY(),
-        64, 64 
-    );
+        float newAngle = angle + i * spread;
+        auto bulletGO = std::make_shared<GameObject>();
 
-    float speed = 1000;       
-    float damage = 20;
-    float maxDistance = 2000;
+        float dist = 32;
+        Vec2 offset = Vec2(cos(newAngle), sin(newAngle)) * dist;
 
-    bulletGO->AddComponent(new Bullet(*bulletGO, angle, speed, damage, maxDistance));
-    Game::GetInstance().GetState().AddObject(bulletGO);
+        bulletGO->box = Rect(
+            associated.box.getCenter().getX() + offset.getX(),
+            associated.box.getCenter().getY() + offset.getY(),
+            64, 64 
+        );
+
+        float speed = 1000;       
+        float damage = 20;
+        float maxDistance = 2000;
+
+        auto playerGO = Character::player.lock();
+        if(!playerGO) return;
+        bool targetsPlayer = (playerGO.get() != charPtr.get());
+
+        bulletGO->AddComponent(new Bullet(*bulletGO, newAngle, speed, damage, maxDistance,targetsPlayer));
+        Game::GetInstance().GetState().AddObject(bulletGO);
+    }
 
     //===========
     //  Sound

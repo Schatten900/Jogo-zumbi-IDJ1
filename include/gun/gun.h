@@ -14,6 +14,8 @@ class Gun : public Component {
         void Render();
         void Shoot(Vec2 target);
 
+        void SetTarget(Vec2 target);
+
     private:
         Sound shotSound;
         Sound reloadSound;
@@ -23,4 +25,6 @@ class Gun : public Component {
 
         std::weak_ptr< GameObject > character;
         float angle;
+
+        Vec2 target;
 };

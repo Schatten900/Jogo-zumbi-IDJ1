@@ -18,5 +18,5 @@ class Resources{
         static std::unordered_map<std::string,SDL_Texture*> imageTable;
         static std::unordered_map<std::string,Mix_Music*> musicTable;
         static std::unordered_map<std::string,Mix_Chunk*> soundTable;
-
+    
 };

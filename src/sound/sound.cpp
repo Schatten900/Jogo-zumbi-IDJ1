@@ -2,6 +2,11 @@
 #include "resources/resources.h"
 #include <iostream>
 
+
+//==============
+// Constructor
+//==============
+
 Sound::Sound() : chunk(nullptr), channel(-1) {}
 
 Sound::Sound(std::string file)
@@ -10,13 +15,10 @@ Sound::Sound(std::string file)
     Open(file);
 }
 
-Sound::~Sound(){
-    if (this->chunk != nullptr) {
-        Stop();
-        Mix_FreeChunk(this->chunk);
-        chunk = nullptr;
-    }
-}
+
+//==============
+// Methods
+//==============
 
 void Sound::Play(int times){
     if(chunk == nullptr) return;

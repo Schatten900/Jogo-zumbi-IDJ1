@@ -28,8 +28,8 @@ void PlayerController::Update(float dt){
     // Shoot
     //===============
     if (im.MousePress(LEFT_MOUSE_BUTTON)){
-        int mouseX = im.GetMouseX() + Camera::pos.getX();
-        int mouseY = im.GetMouseY() + Camera::pos.getY();
+        int mouseX = im.GetMouseX();
+        int mouseY = im.GetMouseY();
 
         character->Issue(Character::Command(Character::Command::SHOOT,mouseX,mouseY));
     }
@@ -39,6 +39,4 @@ void PlayerController::Update(float dt){
 void PlayerController::Render(){}
 
 
-void PlayerController::Start(){
-
-}
+void PlayerController::Start(){}

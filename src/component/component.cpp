@@ -7,3 +7,9 @@ Component::Component(GameObject& associated)
 Component::~Component() {}
 
 void Component::Start() {}
+
+void Component::NotifyCollision(GameObject& other) {}
+
+GameObject& Component::GetAssociated(){
+    return associated;
+}

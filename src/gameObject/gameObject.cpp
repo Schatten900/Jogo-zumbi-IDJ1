@@ -7,20 +7,21 @@ GameObject::GameObject(){
 }
 
 GameObject::~GameObject(){
-    for(int i = components.size() - 1; i >= 0; i--){
-        delete components[i];
-    }
     components.clear();
 }
 
 void GameObject::Update(float dt){
-    for(Component*cpt : components){
+
+    if (isDead) return;
+
+    for(auto& cpt : components){
         cpt->Update(dt);
+        if (isDead) return;
     }
 }
 
 void GameObject::Render(){
-    for(Component*cpt : components){
+    for(auto& cpt : components){
         cpt->Render();
     }
 }
@@ -34,16 +35,19 @@ void GameObject::RequestDelete(){
 }
 
 void GameObject::AddComponent(Component* cpt){
-    components.push_back(cpt);
+    components.emplace_back(cpt);
     if(started) cpt->Start();
-
 }
 
+
 void GameObject::RemoveComponent(Component* cpt){
-    auto it = std::find(components.begin(), components.end(), cpt);
+    auto it = std::find_if(components.begin(), components.end(),
+        [cpt](const std::unique_ptr<Component>& comp){
+            return comp.get() == cpt;
+        });
+
     if(it != components.end()){
-        delete *it;
-        components.erase(it);
+        components.erase(it); 
     }
 }
 
@@ -53,4 +57,14 @@ void GameObject::Start(){
         cp->Start();
     }
     started = true;
+}
+
+
+void GameObject::NotifyCollision(GameObject& other){
+    if (isDead) return;
+
+    for (auto& elem : components){
+        elem->NotifyCollision(other);
+        if (isDead) return;
+    }
 }

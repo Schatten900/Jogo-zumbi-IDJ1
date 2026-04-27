@@ -4,21 +4,25 @@
 
 Vec2 Camera::pos(0,0);
 Vec2 Camera::speed(0,0);
-GameObject* Camera::focus = nullptr;
+std::weak_ptr<GameObject> Camera::focus;
 
-void Camera::Follow(GameObject* newFocus){
+void Camera::Follow(std::shared_ptr<GameObject> newFocus){
     focus = newFocus;
 }
+
 void Camera::Unfollow(){
-    focus = nullptr;
+    focus.reset();
 }
+
 void Camera::Update(float dt){
 
-    if (focus){
+    auto focusPtr = focus.lock();
+
+    if (focusPtr){
         int h,w;
         SDL_GetRendererOutputSize(Game::GetInstance().GetRenderer(), &w, &h);
-        pos.setX(focus->box.getX() + focus->box.getW()/2 - w/2);
-        pos.setY(focus->box.getY() + focus->box.getH()/2 - h/2);
+        pos.setX(focusPtr->box.getX() + focusPtr->box.getW()/2 - w/2);
+        pos.setY(focusPtr->box.getY() + focusPtr->box.getH()/2 - h/2);
         return;
     }
     InputManager& im = InputManager::GetInstance();

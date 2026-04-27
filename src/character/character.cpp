@@ -3,14 +3,23 @@
 #include "spriteRenderer/spriteRenderer.h"
 #include "gun/gun.h"
 #include "game/game.h"
+#include "collider/collider.h"
+#include "zombie/zombie.h"
+#include "camera/camera.h"
+#include "bullet/bullet.h"
+#include "inputManager/inputManager.h"
 
-Character* Character::player = nullptr;
 
-Character::Character(GameObject& associated, std::string sprite) : Component(associated), linearSpeed(200){
+std::weak_ptr<GameObject> Character::player;
 
-    if (player == nullptr) {
-        player = this;
-    }
+Character::Character(GameObject& associated, std::string sprite) 
+    :
+    Component(associated), 
+    linearSpeed(200), 
+    hp(100),
+    hitSound("assets/audio/Hit1.wav"), deathSound("assets/audio/Dead.wav"){
+
+    damageTimer.Restart();
 
     //===================
     // Association
@@ -30,18 +39,28 @@ Character::Character(GameObject& associated, std::string sprite) : Component(ass
     anim->SetAnimation("idle");
     associated.AddComponent(anim);
 
+    //===================
+    // Collision
+    //===================
+
+    associated.AddComponent(new Collider(associated));
+
 }
 
 Character::~Character(){
-    if (player == this) player = nullptr;
+   player.reset();
 }
 
 void Character::Start(){
+
+    
     auto charSelf = Game::GetInstance().GetState().GetObjectPtr(&associated);
 
+    player = charSelf;
+    
     Vec2 center = associated.box.getCenter();
 
-    GameObject* gunGO = new GameObject();
+    auto gunGO = std::make_shared<GameObject>();
     gunGO->box = Rect(
         center.getX() + 32, 
         center.getY(),
@@ -54,9 +73,34 @@ void Character::Start(){
 
 void Character::Update(float dt){
 
+
+    //============
+    //  Updating
+    //============
+    damageTimer.Update(dt);
+    hitTimer.Update(dt);
+    deathTimer.Update(dt);
+
     speed = Vec2(0,0);
     bool moved = false;
 
+
+    //============
+    // AIM 
+    //============
+    auto gunPtr = gun.lock();
+    if (gunPtr){
+        Gun* gunComp = gunPtr->GetComponent<Gun>();
+        if (gunComp){
+            InputManager& im = InputManager::GetInstance();
+            Vec2 mouse(im.GetMouseX(), im.GetMouseY());
+            gunComp->SetTarget(mouse);
+        }
+    }
+
+    //============
+    //  Tasks
+    //============
     while (!taskQueue.empty()){
         auto task = taskQueue.front();
         taskQueue.pop();
@@ -64,7 +108,6 @@ void Character::Update(float dt){
         if (task.type == Command::MOVE){
 
             Vec2 direction = task.pos.normalize();
-            direction = direction.normalize();
             speed = direction * linearSpeed;
             associated.box = associated.box + (speed * dt);
             moved = true;
@@ -73,11 +116,16 @@ void Character::Update(float dt){
             auto gunPtr = gun.lock();
             if (gunPtr){
                 Gun* gunComp = gunPtr->GetComponent<Gun>();
-                if (gunComp) gunComp->Shoot(task.pos);
+                if (gunComp) {
+                    gunComp->Shoot(task.pos);
+                }
             }
         }
     }
 
+    //============
+    //  Sprite
+    //============
     Animator* anim = associated.GetComponent<Animator>();
     if(anim){
         if (moved) 
@@ -94,6 +142,15 @@ void Character::Update(float dt){
         else 
             sr->SetFlip(SDL_FLIP_NONE);
     }
+
+    //============
+    //  Death
+    //============
+    if (hp <= 0 && deathTimer.Get() >0.5f){
+        Camera::Unfollow();
+        player.reset();
+        associated.RequestDelete();
+    } 
 }
 
 void Character::Issue(Command task){
@@ -101,3 +158,46 @@ void Character::Issue(Command task){
 }
 
 void Character::Render(){}
+
+
+void Character::Damage(int damage){
+
+    if(hp <= 0) return;
+    if (damageTimer.Get() < 0.5f) return;
+    
+    hp -= damage;
+    hitSound.Play(1);
+    
+    if(hp > 0){
+        hitTimer.Restart();
+    }
+    else{
+        Animator* anim = associated.GetComponent<Animator>();
+        if(!anim) return;
+        anim->SetAnimation("dead");
+        deathSound.Play(1);
+        deathTimer.Restart();
+    }
+}
+
+
+void Character::NotifyCollision(GameObject& other) {
+
+    if (associated.IsDead()) return;
+    if (other.IsDead()) return;
+
+    Collider* col = other.GetComponent<Collider>();
+    if (!col) return;
+
+    //===========
+    //  Zombie
+    //===========
+
+    Zombie* zombie = other.GetComponent<Zombie>();
+
+    if (zombie && damageTimer.Get() > 1.0f){
+        Damage(zombie->GetDamage());
+        damageTimer.Restart();
+        return;
+    }
+}

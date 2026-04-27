@@ -3,6 +3,7 @@
 #include "rect/rect.h"
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 class Component;
 
@@ -29,6 +30,9 @@ class GameObject{
 
         void Start();
 
+        void NotifyCollision(GameObject& other);
+
+
         //==============
         // Attributes
         //==============
@@ -41,7 +45,7 @@ class GameObject{
         template <class T>
         T* GetComponent() {
             for(size_t i = 0; i < components.size(); i++){
-                T* component = dynamic_cast<T*>(components[i]);
+                T* component = dynamic_cast<T*>(components[i].get());
                 if(component != nullptr) return component;
             }
             return nullptr;
@@ -51,7 +55,7 @@ class GameObject{
         //==============
         // Attributes
         //==============
-        std::vector<Component*> components;
+        std::vector<std::unique_ptr<Component>> components;
         bool isDead;
 
         bool started;

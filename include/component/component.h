@@ -14,4 +14,11 @@ public:
     virtual void Render() = 0;
 
     virtual void Start();
+
+    virtual void NotifyCollision(GameObject& other);
+
+    //=============
+    // Getter
+    //=============
+    GameObject& GetAssociated();
 };
