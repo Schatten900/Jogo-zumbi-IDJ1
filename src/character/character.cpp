@@ -47,14 +47,12 @@ Character::Character(GameObject& associated, std::string sprite)
 
 }
 
-Character::~Character(){
-   player.reset();
-}
+Character::~Character(){}
 
 void Character::Start(){
 
     
-    auto charSelf = Game::GetInstance().GetState().GetObjectPtr(&associated);
+    auto charSelf = Game::GetInstance().GetCurrentState().GetObjectPtr(&associated);
 
     player = charSelf;
     
@@ -67,7 +65,7 @@ void Character::Start(){
         64, 64
     ); 
     gunGO->AddComponent(new Gun(*gunGO,charSelf));
-    gun = Game::GetInstance().GetState().AddObject(gunGO);
+    gun = Game::GetInstance().GetCurrentState().AddObject(gunGO);
 
 }
 

@@ -15,6 +15,8 @@ class WaveSpawner : public Component{
         void Render();
         void SpawnEnemy(bool spawnZombie);
 
+        bool GetWaveFinished();
+
     private:
 
         //===========
@@ -25,6 +27,8 @@ class WaveSpawner : public Component{
 
         std::vector<Wave> waves;
         int currentWave;
+
+        bool waveFinished = false;
 
         //===========
         // Timer

@@ -142,7 +142,7 @@
     void AiController::Render(){}
 
     void AiController::Start(){
-        auto self = Game::GetInstance().GetState().GetObjectPtr(&associated);
+        auto self = Game::GetInstance().GetCurrentState().GetObjectPtr(&associated);
 
         Vec2 center = associated.box.getCenter();
 
@@ -151,7 +151,7 @@
 
         gunGO->AddComponent(new Gun(*gunGO, self));
 
-        gun = Game::GetInstance().GetState().AddObject(gunGO);
+        gun = Game::GetInstance().GetCurrentState().AddObject(gunGO);
     }
 
     int AiController::GetHP(){

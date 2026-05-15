@@ -9,26 +9,61 @@
 class State{
 
     public:
+
+        //===============
+        //  Constructor
+        //===============
         State();
-        ~State();
-        bool QuitRequested();
-        void LoadAssets();
-        void Update(float dt);
-        void Render();
+        virtual ~State();
 
-        //void AddObject(GameObject* go);
+        //===============
+        //  Requested
+        //===============
+        bool virtual QuitRequested();
+        bool virtual PopRequested();
 
-        void Start(); 
-        std::weak_ptr< GameObject > AddObject(std::shared_ptr<GameObject> go);
-        std::weak_ptr< GameObject > GetObjectPtr(GameObject* go); 
+        //===============
+        //  Methods
+        //===============
+        void virtual LoadAssets() = 0;
+        void virtual Update(float dt) = 0;
+        void virtual Render() = 0;
 
-    private:
-        Music music;
+        //===============
+        //  Array
+        //===============
+        void virtual StartArray();
+        void virtual UpdateArray(float dt);
+        void virtual RenderArray();
+        
+        //===============
+        //  Queue
+        //===============
+        void virtual Start() = 0; 
+        void virtual Pause() = 0;
+        void virtual Resume() = 0;
+
+    
+        std::weak_ptr< GameObject >  virtual AddObject(std::shared_ptr<GameObject> go);
+        std::weak_ptr< GameObject > virtual GetObjectPtr(GameObject* go); 
+
+        //===============
+        //  Setters
+        //===============
+        void SetPopRequested(bool requested);
+        void SetQuitRequested(bool requested);
+
+    protected:
+        //===============
+        //  attributes
+        //===============
         bool quitRequested;
-
-        //std::vector<std::unique_ptr<GameObject>> objectArray;
-
         bool started;
-        bool startedWave;
+        bool popRequested;
+        
+        //================
+        //  Object Array
+        //================
         std::vector< std::shared_ptr< GameObject > > objectArray;
+
 };

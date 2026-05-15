@@ -68,3 +68,7 @@ void GameObject::NotifyCollision(GameObject& other){
         if (isDead) return;
     }
 }
+
+bool GameObject::IsStarted() const { 
+    return started;
+}

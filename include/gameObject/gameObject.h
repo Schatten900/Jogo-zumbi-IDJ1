@@ -22,6 +22,7 @@ class GameObject{
         void Update(float dt);
         void Render();
 
+        bool IsStarted()  const;
         bool IsDead() const ;
         void RequestDelete();
 
@@ -59,4 +60,6 @@ class GameObject{
         bool isDead;
 
         bool started;
+
+
 };

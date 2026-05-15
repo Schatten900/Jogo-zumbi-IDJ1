@@ -6,6 +6,9 @@
 #include "character/character.h"
 #include <cstdlib>
 #include <ctime>
+#include "gameData/gameData.h"
+#include "endState/endState.h"
+#include <algorithm>
 
 WaveSpawner::WaveSpawner(GameObject& associated)
     : Component(associated),
@@ -16,7 +19,7 @@ WaveSpawner::WaveSpawner(GameObject& associated)
     spawnTimer.Restart();
 
 
-    for (int i = 0; i < 15; i++){
+    for (int i = 0; i < 5; i++){
         int zombies = 3 + i * 2;
         int npcs = 1 + i; 
 
@@ -31,6 +34,9 @@ void WaveSpawner::Update(float dt){
 
     if (currentWave >= (int)waves.size()){
         associated.RequestDelete();
+        GameData::playerVictory = true;
+        Game::GetInstance().Push(new EndState());
+        Game::GetInstance().GetCurrentState().SetPopRequested(true);
         return;
     }
 
@@ -84,6 +90,13 @@ void WaveSpawner::SpawnEnemy(bool spawnZombie){
     do {
         int x = playerPos.getX() + ((rand() % 800) - 400);
         int y = playerPos.getY() + ((rand() % 800) - 400);
+
+        x = std::max(0, x);
+        y = std::max(0, y);
+
+        x = std::min(x, 1200);
+        y = std::min(y, 900);
+
         spawnPos = Vec2(x,y);
     } while (spawnPos.distance(playerPos) < 200);
 
@@ -96,5 +109,9 @@ void WaveSpawner::SpawnEnemy(bool spawnZombie){
         go->AddComponent(new AiController(*go));
     }
 
-    Game::GetInstance().GetState().AddObject(go);
+    Game::GetInstance().GetCurrentState().AddObject(go);
+}
+
+bool WaveSpawner::GetWaveFinished(){
+    return waveFinished;
 }

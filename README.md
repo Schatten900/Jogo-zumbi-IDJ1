@@ -12,7 +12,7 @@ Acompanhamento do progresso das entregas modularizadas:
 - [x] **Trabalho 4**: Concluido
 - [x] **Trabalho 5**: Concluido
 - [x] **Trabalho 6**: Concluido
-- [ ] **Trabalho 7**: Pendente
+- [x] **Trabalho 7**: Concluido
 
 ---
 
@@ -25,7 +25,7 @@ Certifique-se de ter as dependências da **SDL2**, **SDL2_image** e **SDL2_mixer
 mkdir -p build 
 
 # Compilar o projeto
-g++ -std=c++17 $(find ./src -name "*.cpp") -I./include -Wall -Wextra -o ./build/game $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_mixer 
+g++ -std=c++17 $(find ./src -name "*.cpp") -I./include -Wall -Wextra -o ./build/game $(sdl2-config --cflags --libs) -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
 # Executar o jogo
 ./build/game

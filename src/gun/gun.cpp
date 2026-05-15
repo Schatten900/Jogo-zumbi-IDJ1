@@ -151,7 +151,7 @@ void Gun::Shoot(Vec2 target){
         bool targetsPlayer = (playerGO.get() != charPtr.get());
 
         bulletGO->AddComponent(new Bullet(*bulletGO, newAngle, speed, damage, maxDistance,targetsPlayer));
-        Game::GetInstance().GetState().AddObject(bulletGO);
+        Game::GetInstance().GetCurrentState().AddObject(bulletGO);
     }
 
     //===========
